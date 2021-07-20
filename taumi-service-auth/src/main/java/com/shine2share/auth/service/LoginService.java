@@ -94,10 +94,6 @@ public class LoginService {
     }
 
     private String hashToken(String token) {
-        logger.debug("token before hash: " + token);
-        logger.debug(
-                "token after hash: "
-                        + Hashing.sha256().hashString(token, StandardCharsets.UTF_8).toString());
         return Hashing.sha256().hashString(token, StandardCharsets.UTF_8).toString();
     }
 }

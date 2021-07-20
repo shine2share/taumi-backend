@@ -7,11 +7,13 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.4.4</version>
+        <relativePath/>
     </parent>
     <groupId>com.shine2share</groupId>
     <artifactId>taumi-backend</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
+
     <modules>
         <module>taumi-common</module>
         <module>taumi-core</module>
