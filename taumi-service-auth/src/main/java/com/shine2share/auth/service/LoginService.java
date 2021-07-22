@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -43,7 +45,7 @@ public class LoginService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    public LoginResponse generateToken(String header, GrantType grantType) throws BusinessException {
+    public LoginResponse generateToken(String header, GrantType grantType, String token) throws BusinessException {
         String userId = null;
         String password = null;
         if (GrantType.PASSWORD_GRANT.equals(grantType)) {
@@ -64,7 +66,18 @@ public class LoginService {
                 }
             }
         } else if (GrantType.REFRESH_TOKEN.equals(grantType)) {
-            logger.debug("Grant type is refresh token.");
+            if (token == null || token.length() == 0) {
+                throw new BusinessException(ErrorCode.REFRESH_TOKEN_REQUIRED);
+            }
+            // check refresh token in DB
+            RefreshToken refreshToken = refreshTokenRepository.findById(hashToken(token))
+                    .orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_EXIST));
+            // check refresh token expire
+            if (refreshToken.getExpireAt() < new Date().getTime()) {
+                refreshTokenRepository.delete(refreshToken);
+                throw new BusinessException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            }
+            userId = refreshToken.getUserId();
         } else {
             throw new BusinessException(ErrorCode.GRANT_TYPE_NOT_SUPPORTED);
         }
@@ -95,5 +108,10 @@ public class LoginService {
 
     private String hashToken(String token) {
         return Hashing.sha256().hashString(token, StandardCharsets.UTF_8).toString();
+    }
+
+    @Transactional
+    public void revoke(String token) {
+        refreshTokenRepository.deleteByToken(hashToken(token));
     }
 }
