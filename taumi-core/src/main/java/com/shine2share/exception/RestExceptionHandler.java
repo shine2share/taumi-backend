@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -13,16 +14,20 @@ public class RestExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<String> handleAllException(Exception e) {
-        return handleAllException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        return handleAllExceptionImpl(e);
     }
-    private final ResponseEntity<String> handleAllException(Exception e, HttpStatus httpStatus) {
+    private ResponseEntity<String> handleAllExceptionImpl(Exception e) {
         if (e instanceof BusinessException) {
             BusinessException businessException = (BusinessException) e;
-            logger.error(String.format("Business Exception: code=%s, message=%s", businessException.getCode(), businessException.getCause()));
-            return new ResponseEntity<>(businessException.getDetailMessage(), businessException.getHttpStatus());
-        } else {
-            logger.error(String.format("Unhandled Exception: fullstack=%s", e.getStackTrace()));
+            logger.error(String.format("Business Exception: code=%s, message=%s", businessException.getCode(), businessException.getMessage()));
+            return new ResponseEntity<>(businessException.getMessage(), businessException.getHttpStatus());
+        } else if (e instanceof InvalidTokenException) {
+            logger.error(String.format("Unhandled Exception: fullstack=%s", e.getMessage()));
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
-        return null;
+        else {
+            logger.error(String.format("Unhandled Exception: fullstack=%s", e.getMessage()));
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }
     }
 }
