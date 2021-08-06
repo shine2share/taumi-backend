@@ -11,13 +11,10 @@ import com.shine2share.common.entity.system.RefreshToken;
 import com.shine2share.common.entity.system.User;
 import com.shine2share.system.repository.RefreshTokenRepository;
 import com.shine2share.system.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -26,15 +23,11 @@ import java.util.UUID;
 
 @Service
 public class LoginService {
-    private final Logger logger = LoggerFactory.getLogger(LoginService.class);
-
     @Value("${jwt.access.validity}")
     private Long jwtAccessValidity;
-
     private final UserRepository userRepository;
     private final JWTProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-
     @Autowired
     public LoginService(
             UserRepository userRepository,
@@ -47,21 +40,23 @@ public class LoginService {
 
     public LoginResponse generateToken(String header, GrantType grantType, String token) throws BusinessException {
         String userId = null;
-        String password = null;
+        String password;
         if (GrantType.PASSWORD_GRANT.equals(grantType)) {
             if (header.startsWith("Basic ")) {
                 userId = new String(Base64.getDecoder().decode(header.substring(6))).split(":")[0];
-                if ("shine2share".equals(userId)) {
+                if (userId == null) {
+                    throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+                } else {
                     password = new String(Base64.getDecoder().decode(header.substring(6))).split(":")[1];
                 }
                 // check user info in DB
                 User user = userRepository.getUserByUserId(userId);
-                if (user != null) {
-                    if ("shine2share".equals(userId)) {
-                        if (password != null
-                                && !(new String(Base64.getDecoder().decode(user.getPassword()))).equals(password)) {
-                            throw new BusinessException(ErrorCode.WRONG_PASSWORD);
-                        }
+                if (user == null) {
+                    throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+                } else {
+                    if (password != null
+                            && !(new String(Base64.getDecoder().decode(user.getPassword()))).equals(password)) {
+                        throw new BusinessException(ErrorCode.WRONG_PASSWORD);
                     }
                 }
             }
@@ -70,6 +65,7 @@ public class LoginService {
                 throw new BusinessException(ErrorCode.REFRESH_TOKEN_REQUIRED);
             }
             // check refresh token in DB
+            System.out.println("hashToken: " + hashToken(token));
             RefreshToken refreshToken = refreshTokenRepository.findById(hashToken(token))
                     .orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_EXIST));
             // check refresh token expire
@@ -99,6 +95,7 @@ public class LoginService {
             loginResponse.setRefreshToken(uuId);
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.setToken(hashToken(uuId));
+            System.out.println("refresh token: " + hashToken(uuId));
             refreshToken.setExpireAt(refreshTokenExpireAt.getTime());
             refreshToken.setUserId(userId);
             refreshTokenRepository.save(refreshToken);
@@ -111,7 +108,7 @@ public class LoginService {
     }
 
     @Transactional
-    public void revoke(String token) {
+    public void delete(String token) {
         refreshTokenRepository.deleteByToken(hashToken(token));
     }
 }
