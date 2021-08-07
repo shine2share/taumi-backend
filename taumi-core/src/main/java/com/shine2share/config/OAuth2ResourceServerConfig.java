@@ -38,13 +38,13 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 "/webjars/**",
                 "/swagger-ui.html#!/**",
                 "/v2/**"
-        ).permitAll().anyRequest().authenticated();
+        ).permitAll();//.anyRequest().authenticated();
     }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
         resources.tokenServices(tokenServices());
-        resources.authenticationEntryPoint(appAuthenticationEntryPoint);
+        //resources.authenticationEntryPoint(appAuthenticationEntryPoint);
     }
     @Bean
     public TokenStore tokenStore() {
@@ -54,7 +54,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     public JwtAccessTokenConverter tokenConverter() {
         JwtAccessTokenConverter jwtAccessTokenConverter = new JwtAccessTokenConverter();
         jwtAccessTokenConverter.setVerifierKey(publicKey);
-        jwtAccessTokenConverter.setSigningKey("mykey");
+        //jwtAccessTokenConverter.setSigningKey("mykey");
         return jwtAccessTokenConverter;
     }
     @Bean

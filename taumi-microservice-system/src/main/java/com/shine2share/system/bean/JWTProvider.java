@@ -1,8 +1,8 @@
-package com.shine2share.auth.bean;
+package com.shine2share.system.bean;
 
-import com.shine2share.auth.enums.ErrorCode;
-import com.shine2share.auth.enums.TokenType;
 import com.shine2share.common.BusinessException;
+import com.shine2share.system.enums.ErrorCode;
+import com.shine2share.system.enums.TokenType;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
