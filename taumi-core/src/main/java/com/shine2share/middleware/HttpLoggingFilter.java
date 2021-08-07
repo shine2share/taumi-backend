@@ -20,18 +20,8 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getRequestURI());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getServletPath());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getAuthType());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getPathInfo());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getQueryString());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getContentType());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getLocalAddr());
-        logger.debug("HttpLoggingFilter[HttpServletRequest]: " + httpServletRequest.getUserPrincipal());
-        logger.debug("HttpLoggingFilter[HttpServletResponse]: " + httpServletResponse);
-        logger.debug("HttpLoggingFilter[HttpServletResponse]: " + httpServletResponse.getContentType());
-        logger.debug("HttpLoggingFilter[HttpServletResponse]: " + httpServletResponse.getStatus());
-        logger.debug("HttpLoggingFilter[FilterChain]: " + filterChain);
+        logger.debug("client request: " + httpServletRequest.getHeader("Authorization"));
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }

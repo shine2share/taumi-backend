@@ -65,7 +65,6 @@ public class LoginService {
                 throw new BusinessException(ErrorCode.REFRESH_TOKEN_REQUIRED);
             }
             // check refresh token in DB
-            System.out.println("hashToken: " + hashToken(token));
             RefreshToken refreshToken = refreshTokenRepository.findById(hashToken(token))
                     .orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_EXIST));
             // check refresh token expire
@@ -95,18 +94,15 @@ public class LoginService {
             loginResponse.setRefreshToken(uuId);
             RefreshToken refreshToken = new RefreshToken();
             refreshToken.setToken(hashToken(uuId));
-            System.out.println("refresh token: " + hashToken(uuId));
             refreshToken.setExpireAt(refreshTokenExpireAt.getTime());
             refreshToken.setUserId(userId);
             refreshTokenRepository.save(refreshToken);
         }
         return loginResponse;
     }
-
     private String hashToken(String token) {
         return Hashing.sha256().hashString(token, StandardCharsets.UTF_8).toString();
     }
-
     @Transactional
     public void delete(String token) {
         refreshTokenRepository.deleteByToken(hashToken(token));
