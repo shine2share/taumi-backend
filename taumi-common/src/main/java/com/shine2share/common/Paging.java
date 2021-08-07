@@ -5,10 +5,9 @@ import java.util.List;
 
 public class Paging<T> implements Serializable {
     private List<T> items;
-    private int pageSize;
-    private int pageNum;
-    private int itemPerPage;
-    private int totalItem;
+    private int pageSize; // số bản ghi / trang
+    private int pageNum; // số trang
+    private long totalItem;
 
     public List<T> getItems() {
         return items;
@@ -34,19 +33,11 @@ public class Paging<T> implements Serializable {
         this.pageNum = pageNum;
     }
 
-    public int getItemPerPage() {
-        return itemPerPage;
-    }
-
-    public void setItemPerPage(int itemPerPage) {
-        this.itemPerPage = itemPerPage;
-    }
-
-    public int getTotalItem() {
+    public long getTotalItem() {
         return totalItem;
     }
 
-    public void setTotalItem(int totalItem) {
+    public void setTotalItem(long totalItem) {
         this.totalItem = totalItem;
     }
 }

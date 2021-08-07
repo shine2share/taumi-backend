@@ -17,12 +17,6 @@
     <modules>
         <module>taumi-common</module>
         <module>taumi-core</module>
-        <module>taumi-repository-business</module>
-        <module>taumi-repository-system</module>
-        <module>taumi-service-business</module>
-        <module>taumi-service-system</module>
-        <module>taumi-service-auth</module>
-        <module>taumi-microservice-auth</module>
         <module>taumi-microservice-system</module>
     </modules>
 
