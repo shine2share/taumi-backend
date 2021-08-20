@@ -1,6 +1,6 @@
 package com.shine2share.system.controller;
 
-import com.shine2share.base.ResponseData;
+import com.shine2share.core.base.ResponseData;
 import com.shine2share.common.BusinessException;
 import com.shine2share.system.enums.GrantType;
 import com.shine2share.system.service.LoginService;

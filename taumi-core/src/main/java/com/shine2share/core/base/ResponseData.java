@@ -1,4 +1,4 @@
-package com.shine2share.base;
+package com.shine2share.core.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;

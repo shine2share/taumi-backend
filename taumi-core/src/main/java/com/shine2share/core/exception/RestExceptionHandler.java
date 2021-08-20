@@ -1,4 +1,4 @@
-package com.shine2share.exception;
+package com.shine2share.core.exception;
 
 import com.shine2share.common.BusinessException;
 import org.slf4j.Logger;

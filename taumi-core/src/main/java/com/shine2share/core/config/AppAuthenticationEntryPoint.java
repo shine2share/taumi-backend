@@ -1,7 +1,7 @@
-package com.shine2share.config;
+package com.shine2share.core.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shine2share.base.ResponseData;
+import com.shine2share.core.base.ResponseData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;

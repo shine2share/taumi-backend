@@ -1,4 +1,4 @@
-package com.shine2share.config;
+package com.shine2share.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
